@@ -1,5 +1,5 @@
 # Machine Learning Models Evaluation
-## Project Overview
+## Assignment Overview
 This assignment compares the performance of three machine learning classifiers: K-Nearest Neighbors (KNN), Decision Tree, Random Forest
 The models are trained and evaluated on the Breast Cancer dataset from sklearn. The goal is to classify tumors as malignant or benign and compare model performance using multiple evaluation metrics.
 
