@@ -30,7 +30,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # Helper function for evaluation
-def evaluate_model(model, X_test, y_test, model_name):
+def evaluate_model(model, X_test, y_test, model_name, ax):
     y_pred = model.predict(X_test)
 
     metrics = {
@@ -43,34 +43,38 @@ def evaluate_model(model, X_test, y_test, model_name):
 
     cm = confusion_matrix(y_test, y_pred)
 
-    # Create a new figure for each model
-    plt.figure()
+    # Plot confusion matrix on the provided axis
     disp = ConfusionMatrixDisplay(
         confusion_matrix=cm,
         display_labels=data.target_names
     )
-    disp.plot()
-    plt.title(f"{model_name} Confusion Matrix")
-    plt.show()
+    disp.plot(ax=ax)
+    ax.set_title(f"{model_name} Confusion Matrix")
 
     return metrics
 
+# Create a single figure for all models
+fig, axs = plt.subplots(1, 3, figsize=(15, 5))  # Adjust the number of subplots as needed
 results = []
 
 # ----- KNN Model -----
 knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(X_train_scaled, y_train)
-results.append(evaluate_model(knn, X_test_scaled, y_test, "KNN (k=5)"))
+results.append(evaluate_model(knn, X_test_scaled, y_test, "KNN (k=5)", axs[0]))
 
 # ----- Decision Tree Model -----
 dt = DecisionTreeClassifier(random_state=42)
 dt.fit(X_train, y_train)
-results.append(evaluate_model(dt, X_test, y_test, "Decision Tree (default)"))
+results.append(evaluate_model(dt, X_test, y_test, "Decision Tree (default)", axs[1]))
 
 # ----- Random Forest Model -----
 rf = RandomForestClassifier(n_estimators=100, random_state=42)
 rf.fit(X_train, y_train)
-results.append(evaluate_model(rf, X_test, y_test, "Random Forest (100 trees)"))
+results.append(evaluate_model(rf, X_test, y_test, "Random Forest (100 trees)", axs[2]))
+
+# Show the figure with all confusion matrices
+plt.tight_layout()
+plt.show()
 
 # ----- Results  -----
 results_df = pd.DataFrame(results)
